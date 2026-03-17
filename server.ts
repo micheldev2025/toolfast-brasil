@@ -33,7 +33,7 @@ async function startServer() {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: "micheldasilva2050@gmail.com", // Destinatário fixo conforme solicitado
-      subject: `Novo contato de ${name} - ToolFast Brasil`,
+      subject: `Novo contato de ${name} - ToolFast`,
       text: `Nome: ${name}\nE-mail: ${email}\n\nMensagem:\n${message}`,
     };
 
