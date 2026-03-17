@@ -21,7 +21,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
 
 // --- Types ---
-type ToolId = 'password' | 'counter' | 'hashtag' | 'business-name' | 'text-converter' | 'insta-bio' | 'business-idea';
+type ToolId = 'password' | 'counter' | 'hashtag' | 'business-name' | 'text-converter' | 'insta-bio';
 
 interface Tool {
   id: ToolId;
@@ -450,123 +450,6 @@ const ContactForm = () => {
   );
 };
 
-const BusinessIdeaGenerator = () => {
-  const [category, setCategory] = useState('tecnologia');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [idea, setIdea] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const ideas: Record<string, string[]> = {
-    tecnologia: [
-      "Plataforma de IA para otimizar pequenos negócios locais.",
-      "App de realidade aumentada para decoração de interiores.",
-      "Serviço de cibersegurança focado em idosos.",
-      "Marketplace de peças de reposição para eletrônicos antigos."
-    ],
-    servicos: [
-      "Agência de organização digital para nômades digitais.",
-      "Consultoria de sustentabilidade para condomínios.",
-      "Serviço de chef em casa focado em dietas restritivas.",
-      "Personal shopper de presentes personalizados com IA."
-    ],
-    produtos: [
-      "Marca de roupas feitas 100% de fibras de abacaxi.",
-      "Kit de jardinagem inteligente para apartamentos pequenos.",
-      "Bebida energética natural baseada em superfrutas brasileiras.",
-      "Móveis modulares impressos em 3D com plástico reciclado."
-    ]
-  };
-
-  const generateRandom = () => {
-    const catIdeas = ideas[category];
-    setIdea(catIdeas[Math.floor(Math.random() * catIdeas.length)]);
-  };
-
-  const searchIdea = async () => {
-    if (!searchQuery.trim()) return;
-    
-    setIsLoading(true);
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: `Gere uma ideia de negócio inovadora e criativa baseada no seguinte tema ou palavra-chave: "${searchQuery}". A resposta deve ser curta (máximo 2 frases) e em português do Brasil.`,
-      });
-      setIdea(response.text || "Não foi possível gerar uma ideia no momento.");
-    } catch (error) {
-      console.error("Erro ao gerar ideia:", error);
-      setIdea("Ocorreu um erro ao conectar com a IA. Tente novamente.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <div className="space-y-8">
-      {/* Search Section */}
-      <div className="space-y-4">
-        <label className="block text-sm font-semibold text-slate-700">Pesquisar por tema específico:</label>
-        <div className="flex gap-2">
-          <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
-            <input 
-              className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none" 
-              placeholder="Ex: Sustentabilidade, Pets, Educação..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && searchIdea()}
-            />
-          </div>
-          <button 
-            onClick={searchIdea} 
-            disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-6 py-3 rounded-xl font-medium transition-colors whitespace-nowrap flex items-center gap-2"
-          >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            Pesquisar
-          </button>
-        </div>
-      </div>
-
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t border-slate-100"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white px-3 text-xs font-bold text-slate-400 uppercase tracking-widest">Ou escolha uma categoria</span>
-        </div>
-      </div>
-
-      {/* Category Section */}
-      <div className="flex gap-2">
-        <select 
-          className="w-full p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600 outline-none"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          <option value="tecnologia">Tecnologia</option>
-          <option value="servicos">Serviços</option>
-          <option value="produtos">Produtos</option>
-        </select>
-        <button onClick={generateRandom} className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-xl font-medium transition-colors whitespace-nowrap">Inspirar-me</button>
-      </div>
-
-      {idea && (
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-6 bg-blue-50 border border-blue-100 rounded-2xl text-center"
-        >
-          <p className="text-lg font-medium text-slate-800 italic">"{idea}"</p>
-          <div className="mt-4 flex justify-center">
-            <CopyButton text={idea} />
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
-};
-
 // --- Main App ---
 
 export default function App() {
@@ -581,7 +464,6 @@ export default function App() {
     { id: 'business-name', title: 'Nomes de Empresas', description: 'Sugestões criativas para o nome do seu novo negócio.', icon: <Briefcase />, category: 'Negócios' },
     { id: 'text-converter', title: 'Conversor de Texto', description: 'Mude para maiúsculo, minúsculo ou capitalizado.', icon: <RefreshCw />, category: 'Texto' },
     { id: 'insta-bio', title: 'Bio para Instagram', description: 'Crie bios profissionais e criativas para seu perfil.', icon: <Instagram />, category: 'Social' },
-    { id: 'business-idea', title: 'Ideias de Negócio', description: 'Inspiração para empreender em diversas áreas.', icon: <Lightbulb />, category: 'Negócios' },
   ];
 
   const filteredTools = tools.filter(t => 
@@ -598,7 +480,6 @@ export default function App() {
       case 'business-name': return <BusinessNameGenerator />;
       case 'text-converter': return <TextConverter />;
       case 'insta-bio': return <InstaBioGenerator />;
-      case 'business-idea': return <BusinessIdeaGenerator />;
       default: return null;
     }
   };
