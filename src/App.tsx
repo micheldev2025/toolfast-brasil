@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GoogleGenAI } from "@google/genai";
+import { Analytics } from '@vercel/analytics/react';
 
 // --- Types ---
 type ToolId = 'password' | 'counter' | 'hashtag' | 'business-name' | 'text-converter' | 'insta-bio';
@@ -1256,6 +1257,7 @@ export default function App() {
           </div>
         </div>
       </footer>
+      <Analytics />
     </div>
   );
 }
